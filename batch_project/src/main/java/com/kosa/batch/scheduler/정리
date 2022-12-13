@@ -1,0 +1,3 @@
+Job
+1. Quartz API에서 단 하나의 메서드를 가진 execute(JobExecutionContext context) Job 인터페이스를 제공
+2. 
