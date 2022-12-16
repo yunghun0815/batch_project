@@ -1,5 +1,5 @@
 //package com.kosa.batch.common;
-//
+//삭제예정
 //import java.util.List;
 //
 //import org.springframework.beans.factory.annotation.Autowired;
