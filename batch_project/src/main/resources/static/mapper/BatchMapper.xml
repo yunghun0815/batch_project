@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosa.batch.dao.BatchDao">
+	<select id="getBatchGroupList" resultType="com.kosa.batch.model.BatchGroupVo">
+		SELECT 
+			BATCH_GROUP_ID as batchGroupId, 
+			JOB_ID as jobId,
+			JOB_GROUP_ID as jobGroupId,
+			JOB_GROUP_NAME as jobGroupName,
+			TRIGGER_ID as triggerId,
+			TRIGGER_GROUP_ID as triggerGroupId,
+			DESCRIPTION,
+			CRON,
+			HOST,
+			IP,
+			PORT,
+			START_DATE as startDate,
+			END_DATE as endDate			
+		FROM BATCH_GROUP
+	</select>
+	
+	<insert id="insertBatchGroup" parameterType="com.kosa.batch.model.BatchGroupVo">
+		INSERT INTO BATCH_GROUP(
+			BATCH_GROUP_ID, 
+			JOB_ID,
+			JOB_GROUP_ID,
+			JOB_GROUP_NAME,
+			TRIGGER_ID,
+			TRIGGER_GROUP_ID,
+			CRON,
+			DESCRIPTION,
+			HOST,
+			IP,
+			PORT,
+			START_DATE,
+			END_DATE,
+			JOB_KEY
+		)
+		VALUES(
+			seq_group_id.nextval,
+			#{jobId},
+			#{jobGroupId},
+			#{jobGroupName},
+			#{triggerId},	
+			#{triggerGroupId},	
+			#{cron},
+			#{description},	
+			#{host},	
+			#{ip},	
+			#{port},
+			#{startDate},
+			#{endDate},
+			#{jobKey}
+		)
+	</insert>
+	
+	<update id="updateBatchGroup" parameterType="com.kosa.batch.model.BatchGroupVo">
+		UPDATE BATCH_GROUP
+		SET
+			JOB_ID = #{jobId},
+			JOB_GROUP_ID = #{jobGroupId},
+			JOB_GROUP_NAME = #{jobGroupName},
+			TRIGGER_ID = #{triggerId},	
+			TRIGGER_GROUP_ID = #{triggerGroupId},	
+			CRON = #{cron},
+			DESCRIPTION = #{description},	
+			HOST = #{host},	
+			IP = #{ip},	
+			PORT = #{port},
+			ACTIVE = #{active},
+			START_DATE = #{startDate},
+			END_DATE = #{endDate}				
+		WHERE 
+			BATCH_GROUP_ID = #{batchGroupId}
+	</update>
+	
+	<delete id="deleteBatchGroup" parameterType="int">
+		DELETE FROM BATCH_GROUP WHERE BATCH_GROUP_ID = #{batchGroupId}
+	</delete>
+	
+	<select id="getBatchAppList" resultType="com.kosa.batch.model.BatchAppVo">
+		SELECT
+			APP_ID as appId,
+			BATCH_GROUP_ID as batchGroupId,
+			APP_NAME as appName,
+			PATH,
+			EXECUTION_ORDER as executionOrder
+		FROM BATCH_APP
+	</select>
+	
+	<insert id="insertBatchApp" parameterType="com.kosa.batch.model.BatchAppVo">
+		INSERT INTO BATCH_APP(
+			APP_ID,
+			BATCH_GROUP_ID,
+			APP_NAME,
+			PATH,
+			EXECUTION_ORDER
+		)
+		VALUES(
+			seq_app_id.nextval,
+			#{batchGroupId},
+			#{appName},
+			#{path},
+			#{executionOrder}
+		)		
+	</insert>
+	
+	<update id="updateBatchApp" parameterType="com.kosa.batch.model.BatchAppVo">
+		UPDATE BATCH_APP
+		SET
+			APP_NAME = #{appName},
+			PATH = #{path},
+			EXECUTION_ORDER = #{executionOrder}
+		
+		WHERE
+			APP_ID = #{appId}
+	</update>
+	
+	<delete id="deleteBatchApp" parameterType="int">
+		DELETE FROM BATCH_APP WHERE APP_ID = #{appId}
+	</delete>
+	
+	<delete id="deleteBatchAppByGroupId" parameterType="int">
+		DELETE FROM BATCH_APP WHERE BATCH_GROUP_ID = #{batchGroupId}
+	</delete>
+	
+	<select id="getBatchGroupByJobKey" parameterType="String" resultType="com.kosa.batch.model.BatchGroupVo">
+		SELECT 
+			IP,
+			PORT,
+			PATH
+		FROM
+			BATCH_GROUP
+		JOIN 
+			BATCH_APP
+		ON 
+			BATCH_GROUP.BATCH_GROUP_ID = BATCH_APP.BATCH_GROUP_ID
+		WHERE 
+			JOB_KEY = #{jobKey}
+	</select>
+</mapper>
